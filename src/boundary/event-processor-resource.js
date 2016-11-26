@@ -1,0 +1,23 @@
+import schedule from 'node-schedule';
+import {
+  GDSServiceAPI
+} from 'gds-config';
+
+import EventProcessorService from './event-processor';
+
+export default class EventProcessorResource {
+  constructor() {
+    checkNewJobs();
+  }
+}
+
+function checkNewJobs() {
+  const INTERVAL = process.env.BATCH_INTERVAL || 900;
+  const eventProcessorService = new EventProcessorService();
+  eventProcessorService.checkJobs((err, job) => {
+    if (err) {
+      global.gdsLogger.logError(err);
+    }
+    setTimeout(checkNewJobs, INTERVAL);
+  });
+}
