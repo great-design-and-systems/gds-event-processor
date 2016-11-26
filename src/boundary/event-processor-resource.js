@@ -1,9 +1,5 @@
-import schedule from 'node-schedule';
-import {
-  GDSServiceAPI
-} from 'gds-config';
-
 import EventProcessorService from './event-processor';
+import schedule from 'node-schedule';
 
 export default class EventProcessorResource {
   constructor() {
