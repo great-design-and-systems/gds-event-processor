@@ -15,7 +15,7 @@ const ProcessSchema = mongoose.Schema({
     default: Date.now
   }
 });
-EventHistorySchema.plugin(mongoosePaginate);
+ProcessSchema.plugin(mongoosePaginate);
 
 const ProcessModel = mongoose.model('event-process', ProcessSchema);
 
