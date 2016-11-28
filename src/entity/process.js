@@ -6,6 +6,10 @@ const ProcessSchema = mongoose.Schema({
     type: String,
     required: [true, 'Event name is required.']
   },
+  domain: {
+    type: String,
+    required: [true, 'Domain is required.']
+  },
   triggeredBy: {
     type: String,
     required: [true, 'Triggered by is required']

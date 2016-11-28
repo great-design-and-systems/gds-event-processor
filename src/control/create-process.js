@@ -1,10 +1,11 @@
 import ProcessModel from '../entity/process';
 
 export default class CreateProcess {
-  constructor(eventJobId, triggeredBy, callback) {
+  constructor(eventJobId, triggeredBy, domain, callback) {
     ProcessModel.create({
       eventJobId: eventJobId,
-      triggeredBy: triggeredBy
+      triggeredBy: triggeredBy,
+      domain: domain
     }, (err, result) => {
       if (err) {
         global.gdsLogger.logError(err);
