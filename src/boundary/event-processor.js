@@ -40,27 +40,7 @@ export default class EventProcessorService {
                     if (errStatus) {
                       throw errStatus;
                     } else {
-                      const actionSplitted = job.action.split('.');
-                      const domain = actionSplitted[0];
-                      const link = actionSplitted[1];
-                      new CreateProcess(jobData._id, jobData.triggeredBy, domain, (errProcess) => {
-                        if (errProcess) {
-                          throw errProcess;
-                        } else {
-                          try {
-                            new CreateProcessOptions(services.eventServicePort, jobData._id, (errOptions, options) => {
-                              if (errOptions) {
-                                throw errOptions;
-                              }
-                              done();
-                            });
-                          } catch (errDuringProcess) {
-                            new RemoveProcessByJobId(jobData._id, () => {
-                              throw errDuringProcess;
-                            });
-                          }
-                        }
-                      });
+                     
                     }
                   });
                 } catch (err) {
