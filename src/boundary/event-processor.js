@@ -1,11 +1,10 @@
-import CreateProcess from '../control/create-process';
-import CreateProcessOptions from '../control/create-process-options';
-import RemoveProcessByJobId from '../control/remove-process-by-job-id';
 import {
   GDSServiceAPI,
-  GDSServices
+  GDSServices,
 } from 'gds-config';
+
 import batch from 'batchflow';
+
 export default class EventProcessorService {
   checkJobs(callback) {
     try {
@@ -40,7 +39,7 @@ export default class EventProcessorService {
                     if (errStatus) {
                       throw errStatus;
                     } else {
-                     
+                      
                     }
                   });
                 } catch (err) {
