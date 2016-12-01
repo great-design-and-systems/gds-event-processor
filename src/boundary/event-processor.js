@@ -3,6 +3,7 @@ import {
   GDSServices,
 } from 'gds-config';
 
+import ProcessJob from '../control/process-job';
 import batch from 'batchflow';
 
 export default class EventProcessorService {
@@ -22,7 +23,7 @@ export default class EventProcessorService {
           global.gdsLogger.logError(err);
           throw new Error('Failed getting jobs');
         } else {
-          new GDSServices().initService(GDS_API, (errApi, api) => {
+          new GDSServices().initApi(GDS_API, (errApi, api) => {
             if (errApi) {
               throw new Error('Failed getting api from ' + GDS_API);
             }
@@ -39,7 +40,7 @@ export default class EventProcessorService {
                     if (errStatus) {
                       throw errStatus;
                     } else {
-                      
+                      new ProcessJob(services, job, api, callback);
                     }
                   });
                 } catch (err) {
