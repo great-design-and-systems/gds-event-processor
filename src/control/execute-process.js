@@ -1,12 +1,12 @@
-import CreateProcess from '../create-process';
-import CreateProcessOptions from '../create-process-options';
+import CreateProcess from './create-process';
+import CreateProcessOptions from './create-process-options';
 import ExecuteJob from './execute-job';
-import RemoveProcessByJobId from '../remove-process-by-job-id';
+import RemoveProcessByJobId from './remove-process-by-job-id';
 
 export default class ExecuteProcess {
-  constructor(services, job, api, optionsValue = undefined, callback) {
+  constructor(services, job, api, optionsValue, callback) {
     const jobData = job.data;
-    const actionSplitted = job.action.split('.');
+    const actionSplitted = jobData.action.split('.');
     const domain = actionSplitted[0];
     const link = actionSplitted[1];
     new CreateProcess(jobData._id, jobData.triggeredBy, domain, (errProcess) => {
@@ -19,15 +19,17 @@ export default class ExecuteProcess {
             if (errOptions) {
               throw errOptions;
             }
-            new ExecuteJob(api, options, domain, link, (errExecute) => {
+            new ExecuteJob(api, options, domain, link, (errExecute, result) => {
               if (errExecute) {
                 services.eventServicePort.links.updateJobStatus.execute({
                   params: {
                     eventJobId: jobData._id,
                     status: 'LOCKED'
                   }
-                }, () => {
-                  throw errExecute;
+                }, (errLock) => {
+                  new RemoveProcessByJobId(jobData._id, () => {
+                    callback(errExecute);
+                  });
                 });
               } else {
                 services.eventServicePort.links.updateJobStatus.execute({
@@ -37,13 +39,16 @@ export default class ExecuteProcess {
                   }
                 }, (errStatus) => {
                   if (errStatus) {
-                    throw errStatus;
+                    new RemoveProcessByJobId(jobData._id, () => {
+                      callback(errStatus);
+                    });
                   }
-                  callback();
+                  new RemoveProcessByJobId(jobData._id, () => {
+                    callback(undefined, result);
+                  });
                 });
               }
             });
-
           });
         } catch (errDuringProcess) {
           new RemoveProcessByJobId(jobData._id, () => {

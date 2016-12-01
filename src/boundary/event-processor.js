@@ -23,13 +23,13 @@ export default class EventProcessorService {
           global.gdsLogger.logError(err);
           throw new Error('Failed getting jobs');
         } else {
-          new GDSServices().initApi(GDS_API, (errApi, api) => {
-            if (errApi) {
-              throw new Error('Failed getting api from ' + GDS_API);
-            }
-            batch(jobs.data.data).parallel()
-              .each((i, job, done) => {
-                try {
+          if (jobs.data.data && jobs.data.data.length) {
+            new GDSServices().initApi(GDS_API, (errApi, api) => {
+              if (errApi) {
+                throw new Error('Failed getting api from ' + GDS_API);
+              }
+              batch(jobs.data.data).parallel()
+                .each((i, job, done) => {
                   const jobData = job.data;
                   services.eventServicePort.links.updateJobStatus.execute({
                     params: {
@@ -38,20 +38,26 @@ export default class EventProcessorService {
                     }
                   }, (errStatus) => {
                     if (errStatus) {
-                      throw errStatus;
+                      global.gdsLogger.logError(err);
+                      done();
                     } else {
-                      new ProcessJob(services, job, api, callback);
+                      new ProcessJob(services, job, api, (errJob) => {
+                        if (errJob) {
+                          global.gdsLogger.logError(err);
+                          done();
+                        } else {
+                          done();
+                        }
+                      });
                     }
                   });
-                } catch (err) {
-                  global.gdsLogger.logError(err);
-                  done();
-                }
-              }).end(() => {
-                callback(undefined, jobs);
-              });
-          });
-
+                }).end(() => {
+                  callback(undefined, jobs);
+                });
+            });
+          } else {
+            callback();
+          }
         }
       });
     } catch (err) {

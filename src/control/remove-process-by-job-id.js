@@ -1,7 +1,7 @@
 import ProcessModel from '../entity/process';
 
 export default class RemoveProcessByJobId {
-  constructor(eventJobId, triggeredBy, callback) {
+  constructor(eventJobId, callback) {
     ProcessModel.remove({
       eventJobId: eventJobId
     }, (err, result) => {

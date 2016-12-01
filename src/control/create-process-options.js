@@ -14,21 +14,22 @@ export default class CreateProcessOptions {
           message: 'Failed getting input contexts.'
         });
       } else {
-        const contexts = eventContexts.data || [];
+        const contexts = eventContexts.data.data || [];
         const options = {};
-        contexts.forEach((i, context) => {
-          switch (context.data.type) {
+        contexts.forEach((contextDTO) => {
+          const context = contextDTO.data;
+          switch (context.type) {
             case 'PATH':
-              addField(options, 'params', context.data.field, context.data.value, optionValue);
+              addField(options, 'params', context.field, context.value, optionValue);
               break;
             case 'HEADER':
-              addField(options, 'headers', context.data.field, context.data.value, optionValue);
+              addField(options, 'headers', context.field, context.value, optionValue);
               break;
             case 'QUERY':
-              addField(options, 'query', context.data.field, context.data.value, optionValue);
+              addField(options, 'query', context.field, context.value, optionValue);
               break;
             case 'BODY':
-              addField(options, 'data', context.data.field, context.data.value, optionValue);
+              addField(options, 'data', context.field, context.value, optionValue);
               break;
           }
         });

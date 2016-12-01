@@ -8,7 +8,7 @@ export default class ProcessJob {
 
         switch (eventType) {
             case 'PROCEDURE':
-                new ExecuteProcedure(services, job, api, (err) => {
+                new ExecuteProcedure(services, job, api, undefined, (err) => {
                     if (err) {
                         updateJobStatus.execute({
                             params: {
@@ -31,7 +31,7 @@ export default class ProcessJob {
             case 'SCHEDULED':
                 break;
             default:
-                new ExecuteProcess(services, job, api, callback);
+                new ExecuteProcess(services, job, api, undefined, callback);
                 break;
         }
 
