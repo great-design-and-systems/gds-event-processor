@@ -48,14 +48,17 @@ function addField(context, type, field, value, optionsValue) {
 
 function getValue(optionsValue, value) {
   let resultValue = value;
-  if (optionsValue) {
-    new GDSUtil().getJsonValue(optionsValue, value, (err, result) => {
-      if (err) {
-        throw err;
-      } else {
-        resultValue = result;
-      }
-    })
+  const regFor = /({)(.*)(})/g;
+  if (regFor.test(resultValue)) {
+    if (optionsValue) {
+      new GDSUtil().getJsonValue(optionsValue, value, (err, result) => {
+        if (err) {
+          throw err;
+        } else {
+          resultValue = result;
+        }
+      })
+    }
   }
   return resultValue;
 }

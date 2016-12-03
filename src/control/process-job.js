@@ -8,7 +8,7 @@ export default class ProcessJob {
 
         switch (eventType) {
             case 'PROCEDURE':
-                new ExecuteProcedure(services, job, api, undefined, (err) => {
+                new ExecuteProcedure(services, job, api, (err) => {
                     if (err) {
                         updateJobStatus.execute({
                             params: {

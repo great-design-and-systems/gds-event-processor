@@ -44,7 +44,7 @@ export default class ExecuteProcess {
                     });
                   }
                   new RemoveProcessByJobId(jobData._id, () => {
-                    callback(undefined, result);
+                    callback(undefined, result.data);
                   });
                 });
               }
