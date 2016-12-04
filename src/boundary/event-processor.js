@@ -65,7 +65,7 @@ export default class EventProcessorService {
       callback(err);
     }
   }
-  GetProcesses(paginate, callback) {
+  getProcesses(paginate, callback) {
     new GetProcesses(paginate, callback);
   }
 }
