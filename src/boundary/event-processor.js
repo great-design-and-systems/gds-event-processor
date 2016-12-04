@@ -3,6 +3,7 @@ import {
   GDSServices,
 } from 'gds-config';
 
+import GetProcesses from '../control/get-processes';
 import ProcessJob from '../control/process-job';
 import batch from 'batchflow';
 
@@ -63,5 +64,8 @@ export default class EventProcessorService {
     } catch (err) {
       callback(err);
     }
+  }
+  GetProcesses(paginate, callback) {
+    new GetProcesses(paginate, callback);
   }
 }
