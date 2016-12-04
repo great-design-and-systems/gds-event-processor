@@ -22,15 +22,16 @@ export default class ExecuteScheduled {
 class CheckSchedule {
     constructor(jobData, scheduledJobResult, updateJobStatus) {
         const curDate = new Date();
-        curDate.setMilliseconds(0);
         const jobId = jobData._id;
         const data = scheduledJobResult.data.data;
         const scheduled = data.scheduled;
         const nextEventJobId = scheduled.nextEventJobId;
-        const dateTime = scheduled.dateTime;
-        console.log('time1 =>', curDate.getTime());
-        console.log('time2 =>', new Date(dateTime).getTime());
-        console.log('checking => ', curDate.getTime() === new Date(dateTime).getTime());
+        const dateTime = new Date(scheduled.dateTime);
+        const dateCom = new Date(curDate.getFullYear(), curDate.getMonth(), curDate.getDay(), curDate.getHours(), curDate.getSeconds(), 0);
+        console.log('time1 =>', dateCom.getTime());
+        console.log('time1S =>', dateCom);
+        console.log('time2 =>', dateTime.getTime());
+        console.log('checking => ', dateCom.getTime() === dateTime.getTime());
         if (curDate.getTime() === new Date(dateTime).getTime()) {
             updateJobStatus.execute({
                 params: {
