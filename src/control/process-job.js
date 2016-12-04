@@ -1,5 +1,6 @@
 import ExecuteProcedure from './execute-procedure';
 import ExecuteProcess from './execute-process';
+import ExecuteScheduled from './execute-scheduled';
 
 export default class ProcessJob {
     constructor(services, job, api, callback) {
@@ -29,6 +30,7 @@ export default class ProcessJob {
                 });
                 break;
             case 'SCHEDULED':
+                new ExecuteScheduled(services, job, callback);
                 break;
             default:
                 new ExecuteProcess(services, job, api, undefined, callback);
