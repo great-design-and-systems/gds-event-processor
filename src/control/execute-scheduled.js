@@ -28,10 +28,6 @@ class CheckSchedule {
         const nextEventJobId = scheduled.nextEventJobId;
         const dateTime = new Date(scheduled.dateTime);
         const dateCom = new Date(curDate.getFullYear(), curDate.getMonth(), curDate.getDay(), curDate.getHours(), curDate.getSeconds(), 0);
-        console.log('time1 =>', dateCom.getTime());
-        console.log('time1S =>', dateCom);
-        console.log('time2 =>', dateTime.getTime());
-        console.log('checking => ', dateCom.getTime() === dateTime.getTime());
         if (curDate.getTime() === new Date(dateTime).getTime()) {
             updateJobStatus.execute({
                 params: {
@@ -60,7 +56,7 @@ class CheckSchedule {
                 }
             });
         } else {
-            setTimeout(function() {
+            setTimeout(function () {
                 new CheckSchedule(jobData, scheduledJobResult, updateJobStatus);
             }, 1000);
         }
