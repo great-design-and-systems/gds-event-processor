@@ -40,7 +40,7 @@ export default class EventProcessorResource {
 }
 
 function checkNewJobs() {
-  const INTERVAL = process.env.BATCH_INTERVAL || 900;
+  const INTERVAL = process.env.BATCH_INTERVAL || 1500;
   const eventProcessorService = new EventProcessorService();
   eventProcessorService.checkJobs((err, job) => {
     if (err) {
