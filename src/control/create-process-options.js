@@ -18,19 +18,18 @@ export default class CreateProcessOptions {
         const options = {};
         contexts.forEach((contextDTO) => {
           const context = contextDTO.data;
-          let contextValue = GDSUtil.isJson(context.value) ? JSON.parse(context.value) : context.value;
           switch (context.type) {
             case 'PATH':
-              addField(options, 'params', context.field, contextValue, optionValue);
+              addField(options, 'params', context.field, context.value, optionValue);
               break;
             case 'HEADER':
-              addField(options, 'headers', context.field, contextValue, optionValue);
+              addField(options, 'headers', context.field, context.value, optionValue);
               break;
             case 'QUERY':
-              addField(options, 'query', context.field, contextValue, optionValue);
+              addField(options, 'query', context.field, context.value, optionValue);
               break;
             case 'BODY':
-              addField(options, 'data', context.field, contextValue, optionValue);
+              addField(options, 'data', context.field, context.value, optionValue);
               break;
           }
         });
@@ -47,19 +46,33 @@ function addField(context, type, field, value, optionsValue) {
   lodash.set(lodash.get(context, type), field, getValue(optionsValue, value));
 }
 
+function getMatches(value, regFor) {
+  regFor.lastIndex = 0;
+  const matches = [];
+  let matchers;
+  while ((matchers = regFor.exec(value)) !== null) {
+    var match = matchers[0];
+    matches.push(match);
+  }
+  return matches;
+}
+
 function getValue(optionsValue, value) {
   let resultValue = value;
-  const regFor = /({)(.*)(})/g;
+  const regFor = /(\$)(.*)(;)/g;
   if (regFor.test(resultValue)) {
     if (optionsValue) {
-      new GDSUtil().getJsonValue(optionsValue, value, (err, result) => {
-        if (err) {
-          throw err;
-        } else {
-          resultValue = result;
-        }
-      })
+      const matches = getMatches(value, regFor);
+      matches.forEach(exp => {
+        new GDSUtil().getJsonValue(optionsValue, exp.replace('$', '').replace(';', ''), (err, result) => {
+          if (err) {
+            throw err;
+          } else {
+            resultValue = resultValue.replace(exp, result);
+          }
+        })
+      });
     }
   }
-  return resultValue;
+  return new GDSUtil().isJson(resultValue) ? JSON.parse(resultValue) : resultValue;
 }
