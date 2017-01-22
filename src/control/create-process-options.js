@@ -64,15 +64,21 @@ function getValue(optionsValue, value) {
     if (optionsValue) {
       const matches = getMatches(value, regFor);
       matches.forEach(exp => {
-        new GDSUtil().getJsonValue(optionsValue, exp.replace('$', '').replace(';', ''), (err, result) => {
-          if (err) {
-            throw err;
-          } else {
-            resultValue = resultValue.replace(exp, result);
-          }
-        })
+        let expr = exp.replace('$', '').replace(';', '');
+        if (expr === 'this') {
+          resultValue = optionsValue;
+        }
+        else {
+          new GDSUtil().getJsonValue(optionsValue, expr, (err, result) => {
+            if (err) {
+              throw err;
+            } else {
+              resultValue = resultValue.replace(exp, result);
+            }
+          })
+        }
       });
     }
   }
-  return new GDSUtil().isJson(resultValue) ? JSON.parse(resultValue) : resultValue;
+  return new GDSUtil().isJson(resultValue) ? JSON.parse(resultValue) : resultValue.constructor === Array ? JSON.parse(resultValue) : resultValue;
 }
