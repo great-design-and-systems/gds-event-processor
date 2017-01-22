@@ -32,23 +32,27 @@ export default class ExecuteProcedure {
             if (errProcess) {
               callback(errProcess);
             } else {
-              updateProcedureContext.execute({
-                params: {
-                  eventJobId: nextEventJobId
-                },
-                data: result
-              }, (errContext) => {
-                if (errContext) {
-                  callback(errContext);
-                } else {
-                  updateJobStatus.execute({
-                    params: {
-                      eventJobId: nextEventJobId,
-                      status: 'NEW'
-                    }
-                  }, callback);
-                }
-              });
+              if (nextEventJobId) {
+                updateProcedureContext.execute({
+                  params: {
+                    eventJobId: nextEventJobId
+                  },
+                  data: result
+                }, (errContext) => {
+                  if (errContext) {
+                    callback(errContext);
+                  } else {
+                    updateJobStatus.execute({
+                      params: {
+                        eventJobId: nextEventJobId,
+                        status: 'NEW'
+                      }
+                    }, callback);
+                  }
+                });
+              } else {
+                callback();
+              }
             }
           });
         }
