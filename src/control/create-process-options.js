@@ -18,18 +18,19 @@ export default class CreateProcessOptions {
         const options = {};
         contexts.forEach((contextDTO) => {
           const context = contextDTO.data;
+          let contextValue = GDSUtil.isJson(context.value) ? JSON.parse(context.value) : context.value;
           switch (context.type) {
             case 'PATH':
-              addField(options, 'params', context.field, context.value, optionValue);
+              addField(options, 'params', context.field, contextValue, optionValue);
               break;
             case 'HEADER':
-              addField(options, 'headers', context.field, context.value, optionValue);
+              addField(options, 'headers', context.field, contextValue, optionValue);
               break;
             case 'QUERY':
-              addField(options, 'query', context.field, context.value, optionValue);
+              addField(options, 'query', context.field, contextValue, optionValue);
               break;
             case 'BODY':
-              addField(options, 'data', context.field, context.value, optionValue);
+              addField(options, 'data', context.field, contextValue, optionValue);
               break;
           }
         });
